@@ -1,6 +1,6 @@
 import { StatsD } from 'hot-shots';
-import DataDogMetricTracker, { DataDogOptions } from '../../src/metric-tracker/datadog/DataDogMetricTracker';
-import IMetricTracker from '../../src/metric-tracker/interfaces/IMetricTracker';
+import DataDogMetricTracker, { DataDogOptions } from '../../../src/metric-tracker/datadog/DataDogMetricTracker';
+import IMetricTracker from '../../../src/metric-tracker/interfaces/IMetricTracker';
 
 jest.mock('hot-shots');
 
