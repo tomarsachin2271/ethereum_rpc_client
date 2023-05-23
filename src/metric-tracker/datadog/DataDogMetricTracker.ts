@@ -3,12 +3,12 @@ import { StatsD } from 'hot-shots';
 
 
 export type DataDogOptions = {
-    host?: string;
-    port?: number;
-    prefix?: string;
-    latencyMetric?: string;
-    countMetric?: string;
-    errorMetric?: string;
+  host?: string;
+  port?: number;
+  prefix?: string;
+  latencyMetric?: string;
+  countMetric?: string;
+  errorMetric?: string;
 }
 
 /**
@@ -25,32 +25,36 @@ export type DataDogOptions = {
  * errorMetric: Metric name used to track count error count of Http RPC Call. If not set, ethereum_rpc.errors is used.
  */
 export default class DatadogMetricTracker implements IMetricTracker {
-    private client: StatsD;
+  private client: StatsD;
 
-    private latencyMetric: string;
-    private countMetric: string;
-    private errorMetric: string;
+  private latencyMetric: string;
+  private countMetric: string;
+  private errorMetric: string;
 
-    constructor(datadogOptions: DataDogOptions) {
-        this.client = new StatsD(datadogOptions);
-        this.latencyMetric = datadogOptions.latencyMetric || 'ethereum_rpc.latency';
-        this.countMetric = datadogOptions.countMetric || 'ethereum_rpc.count';
-        this.errorMetric = datadogOptions.errorMetric || 'ethereum_rpc.errors';
-    }
-  
-    track(method: string, params: any[], nodeUrl: string, responseTime: number, success: boolean, error?: Error): void {
+  constructor(datadogOptions: DataDogOptions) {
+    this.client = new StatsD(datadogOptions);
+    this.latencyMetric = datadogOptions.latencyMetric || 'ethereum_rpc.latency';
+    this.countMetric = datadogOptions.countMetric || 'ethereum_rpc.count';
+    this.errorMetric = datadogOptions.errorMetric || 'ethereum_rpc.errors';
+  }
+
+  track(method: string, params: any[], nodeUrl: string, responseTime: number, success: boolean, error?: Error): Promise<void> {
+    return new Promise((resolve) => {
       const tags = [
         `method:${method}`,
         `nodeUrl:${nodeUrl}`,
         `success:${success}`,
       ];
-      
+
       this.client.timing(this.latencyMetric, responseTime, tags);
       this.client.increment(this.countMetric, tags);
-      
+
       if (error) {
         tags.push(`error:${error.name}`);
         this.client.increment(this.errorMetric, 1, tags);
       }
-    }
+
+      resolve()
+    });
+  }
 }

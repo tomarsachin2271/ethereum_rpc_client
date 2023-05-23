@@ -1,4 +1,4 @@
-import { EthereumClient, IMetricTracker } from '../src';
+import { EthereumClient, IMetricTracker } from '../../src';
 import axios from 'axios';
 
 jest.mock('axios');

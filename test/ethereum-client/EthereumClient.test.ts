@@ -1,4 +1,4 @@
-import { EthereumClient } from '../src';
+import { EthereumClient } from '../../src';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -75,6 +75,28 @@ describe('EthereumClient method tests without MetricTracker', () => {
         // Assert that calling getBalance throws an error
         await expect(client.getBalance(address)).rejects.toThrow('Network Error');
     });
+
+
+    // test getBalance with custom node URl
+    it('should call the getBalance method with custom nodeUrl and return the result', async () => {
+        const address = '0x1234';
+        const result = '0x5678';
+        const customNodeUrl = 'http://customnodeurl:8545';
+
+        const customMock = axios as jest.Mocked<typeof axios>;
+        customMock.create = jest.fn(() => customMock);
+
+        // Mock the response for the eth_getBalance method
+        mockEthMethod('eth_getBalance', [address, 'latest'], result);
+
+        const balance = await client.getBalance(address, customNodeUrl);
+        expect(balance).toEqual(result);
+
+        // Check that the mocked axios post method was called with the custom node URL
+        expect((customMock.post as jest.Mock).mock.calls[0][0]).toEqual('');
+        expect((customMock.create as jest.Mock).mock.calls[0][0].baseURL).toEqual(customNodeUrl);
+    });
+
 
     // test getTransactionCount
     it('should call the getTransactionCount method and return the result', async () => {
