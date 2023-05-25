@@ -10,9 +10,9 @@
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint --fix 'src/**/*.ts'",
-    "test": "jest --config jest.unit.config.cjs",
-    "test:coverage": "jest --config jest.unit.config.cjs --coverage",
-    "test:e2e": "jest --config jest.e2e.config.cjs"
+    "test": "jest --config jest.unit.config.cjs --coverage",
+    "test:e2e": "jest --config jest.e2e.config.cjs",
+    "posttest": "codecov"
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",
@@ -26,6 +26,7 @@
     "@types/jest": "^29.5.1",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
+    "codecov": "^3.8.3",
     "eslint": "^8.0.1",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-import": "^2.25.2",
