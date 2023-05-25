@@ -1,9 +1,9 @@
-import EthereumClient from "./EthereumClient";
-import IMetricTracker from "./metric-tracker/interfaces/IMetricTracker";
-import DatadogMetricTracker from "./metric-tracker/datadog/DataDogMetricTracker";
+import EthereumClient from './EthereumClient'
+import type IMetricTracker from './metric-tracker/interfaces/IMetricTracker'
+import DatadogMetricTracker from './metric-tracker/datadog/DataDogMetricTracker'
 
 export {
-    EthereumClient,
-    IMetricTracker,
-    DatadogMetricTracker
+  EthereumClient,
+  type IMetricTracker,
+  DatadogMetricTracker
 }

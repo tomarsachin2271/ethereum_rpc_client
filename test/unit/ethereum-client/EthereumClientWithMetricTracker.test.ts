@@ -1,10 +1,10 @@
-import { EthereumClient, IMetricTracker } from '../../src';
+import { EthereumClient, IMetricTracker } from '../../../src';
 import axios from 'axios';
 
 jest.mock('axios');
 
 // This sets the mock adapter on the default instance
-var mock = axios as jest.Mocked<typeof axios>;
+const mock = axios as jest.Mocked<typeof axios>;
 mock.create = jest.fn(() => mock);
 
 // Create a mock MetricTracker
@@ -13,7 +13,7 @@ const mockMetricTracker: IMetricTracker = {
 };
 
 // Initialize the EthereumClient with a default node URL and the mock MetricTracker
-const client = new EthereumClient({ defaultNodeUrl: 'http://localhost:8545', metricTracker: mockMetricTracker });
+const client = new EthereumClient({ defaultNodeUrls: ['http://localhost:8545'], metricTracker: mockMetricTracker });
 
 // helper function to mock an Ethereum RPC method
 function mockEthMethod(method: string, params: any[], result: any, error?: any) {
@@ -42,7 +42,7 @@ describe('EthereumClient method tests with MetricTracker', () => {
         const balance = await client.getBalance(address);
 
         expect(balance).toEqual(result);
-        expect(mockMetricTracker.track).toHaveBeenCalledWith('eth_getBalance', [address, 'latest'], 'http://localhost:8545', expect.any(Number), true, undefined);
+        expect(mockMetricTracker.track).toHaveBeenCalledWith('eth_getBalance', [address, 'latest'], 'http://localhost:8545', expect.any(Number), true);
     });
 
     // test getBalance error handling

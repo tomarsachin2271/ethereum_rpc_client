@@ -1,15 +1,13 @@
-import { EthereumClient } from '../../src';
-import axios from 'axios';
+import { EthereumClient } from '../../../src';
+import axios, { AxiosError } from 'axios';
 
 jest.mock('axios');
 
 // This sets the mock adapter on the default instance
-var mock = axios as jest.Mocked<typeof axios>;
-mock.create = jest.fn(() => mock);
-
+const mock = axios as jest.Mocked<typeof axios>;
 
 // Initialize the EthereumClient with a default node URL
-const client = new EthereumClient({ defaultNodeUrl: 'http://localhost:8545' });
+let client: EthereumClient;
 
 // helper function to mock an Ethereum RPC method
 // Add a new optional parameter to mockEthMethod for the error response
@@ -27,7 +25,13 @@ function mockEthMethod(method: string, params: any[], result: any, error?: any) 
 
 describe('EthereumClient method tests without MetricTracker', () => {
 
-    afterEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+        client = new EthereumClient({ defaultNodeUrls: ['http://localhost:8545', 'http://localhost2:8545'] });
+    })
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
     // test getBalance
     it('should call the getBalance method and return the result', async () => {
@@ -74,6 +78,42 @@ describe('EthereumClient method tests without MetricTracker', () => {
 
         // Assert that calling getBalance throws an error
         await expect(client.getBalance(address)).rejects.toThrow('Network Error');
+    });
+
+    it('should retry the request when it fails with a non-200 status and track the call', async () => {
+        const address = '0x1234';
+        const result = '0x5678';
+
+        // Set up the axios mock to first fail with a non-200 status, then succeed.
+        const mockError: AxiosError = {
+            isAxiosError: true,
+            name: 'Error',
+            message: 'Non-200 status',
+            config: {},
+            response: {
+                status: 500,
+                statusText: 'Internal Server Error',
+                data: {},
+                headers: {},
+                config: {},
+            },
+            toJSON: () => ({
+                message: mockError.message,
+                name: mockError.name,
+                response: mockError.response,
+                config: mockError.config,
+            }),
+        };
+
+        mock.post
+            .mockRejectedValueOnce(mockError)
+            .mockResolvedValueOnce({ data: { result, jsonrpc: '2.0', id: 1 } });
+
+        const balance = await client.getBalance(address);
+
+        // Ensure the request was retried and eventually succeeded.
+        expect(balance).toEqual(result);
+        expect(mock.post).toHaveBeenCalledTimes(2);
     });
 
 

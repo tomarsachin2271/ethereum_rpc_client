@@ -1,12 +1,12 @@
 {
   "name": "ethereum_rpc_client",
   "version": "1.0.0",
-  "type": "module",
   "description": "Simple package that provide simple methods for each eth_rpc calls directly.",
   "main": "index.js",
   "repository": "https://github.com/tomarsachin2271/ethereum_rpc_client.git",
   "author": "tomarsachin2271 <sachin.tomar@biconomy.io>",
   "license": "MIT",
+  "types": "module",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint --fix 'src/**/*.ts'",
@@ -24,7 +24,8 @@
     "@rollup/plugin-typescript": "^11.1.1",
     "@types/axios-mock-adapter": "^1.10.0",
     "@types/jest": "^29.5.1",
-    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
     "eslint": "^8.0.1",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-import": "^2.25.2",
@@ -35,7 +36,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^29.1.0",
     "tslib": "^2.5.2",
-    "typescript": "*"
+    "typescript": "^5.0.4"
   },
   "dependencies": {
     "axios": "^0.24.0",
