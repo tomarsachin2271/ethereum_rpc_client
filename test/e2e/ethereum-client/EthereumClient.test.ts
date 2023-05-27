@@ -22,6 +22,17 @@ describe('EthereumClient E2E tests', () => {
                 await expect(client.getBalance(invalidTestAddress)).rejects.toThrow(Error);
             });
 
+            it('should call the getTransactionCount method and return the result', async()=>{
+                const address = testAddress;
+                const txsCount = await client.getTransactionCount(address);
+                expect(typeof txsCount).toBe('string');
+            });
+
+            it('should throw an error when getTransactionCount method is provided with an invalid address', async()=>{
+                const address = invalidTestAddress;
+                await expect(client.getTransactionCount(address)).rejects.toThrow(Error);
+            })
+
             // Add more tests as needed
         });
 
