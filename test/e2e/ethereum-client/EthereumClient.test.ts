@@ -2,6 +2,8 @@ import { EthereumClient } from "../../../src";
 import networkConfig from "./networkConfig";
 
 const testAddress = '0x229F701345b239c9C0a0685ef32e34842eDd1a45';
+// truncated non-20 bytes string
+const invalidTestAddress = '0x229F701345b239c9C0a0685ef32e34842';
 
 describe('EthereumClient E2E tests', () => {
     networkConfig.forEach(({ nodeUrls }) => {
@@ -15,7 +17,13 @@ describe('EthereumClient E2E tests', () => {
                 expect(typeof balance).toBe('string');
             });
 
+            it('should throw an error when getBalance method is provided with an invalid address', async()=>{
+                const address = invalidTestAddress;
+                await expect(client.getBalance(invalidTestAddress)).rejects.toThrow(Error);
+            });
+
             // Add more tests as needed
         });
+
     });
 });
