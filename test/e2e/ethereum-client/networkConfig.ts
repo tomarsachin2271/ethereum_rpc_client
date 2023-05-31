@@ -13,7 +13,7 @@ export const networkConfig: NetworkConfig[] = [
     { nodeUrls: ['https://rpc.ankr.com/polygon_mumbai'] }
 ];
 
-export  const uniNetworkConfig: NetworkConfig[] = [
+export  const uniswapNetworkConfig: NetworkConfig[] = [
     { nodeUrls: ['https://rpc.ankr.com/eth'] },
     { nodeUrls: ['https://rpc.ankr.com/eth_goerli'] },
     { nodeUrls: ['https://rpc.ankr.com/arbitrum'] },
