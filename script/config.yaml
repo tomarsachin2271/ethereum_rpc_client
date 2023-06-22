@@ -1,0 +1,16 @@
+providers:
+  - name: ANKR
+    nodes:
+      - url: 'https://rpc.ankr.com/polygon_mumbai'
+        address: '0xb8ff877ed78ba520ece21b1de7843a8a57ca47cb'
+        transactionHash: '0x8337e52c140e7ab26f106f56b30580b0c016e038fff813649177fed8b530cc16'
+  - name: POCKT
+    nodes:
+      - url: 'https://arbitrum-one.gateway.pokt.network/v1/lb/509bd82636e5c379abc3ae6b'
+        address: '0xb8ff877ed78ba520ece21b1de7843a8a57ca47cb'
+        transactionHash: '0x8337e52c140e7ab26f106f56b30580b0c016e038fff813649177fed8b530cc16'
+  - name: INFURA
+    nodes:
+      - url: 'https://mainnet.infura.io/v3/d126f392798444609246423b06116c77'
+        address: '0xb8ff877ed78ba520ece21b1de7843a8a57ca47cb'
+        transactionHash: '0x45c2a6fdb337154b3ce16cf03d41b8e368076f34d1af381daaba962912d159b0'
