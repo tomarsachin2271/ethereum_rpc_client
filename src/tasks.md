@@ -1,0 +1,3 @@
+- [X] Add all other relevant RPC calls
+- [ ] Write tests for each of those RPC calls
+- [ ] Introduce Strict typechecking everywhere aka get away with using any
