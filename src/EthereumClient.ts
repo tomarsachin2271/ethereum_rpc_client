@@ -76,63 +76,105 @@ class EthereumClient {
     throw lastError; // if all requests fail, throw the last error
   }
 
-  async getBalance(address: string, nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_getBalance', [address, 'latest'], nodeUrl)
-  }
-
-  async getTransactionCount(address: string, nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_getTransactionCount', [address, 'latest'], nodeUrl)
-  }
-
-  async getChainId(nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_chainId', [], nodeUrl)
-  }
-
   async getBlockNumber(nodeUrl?: string) {
     return await this.makeRPCRequest('eth_blockNumber', [], nodeUrl)
-  }
-
-  async getTransactionReceipt(transactionHash: string, nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_getTransactionReceipt', [transactionHash], nodeUrl)
-  }
-
-  async getBlockByNumber(blockNumber: string, nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_getBlockByNumber', [blockNumber, true], nodeUrl)
   }
 
   async call(transactionObject: any, nodeUrl?: string) {
     return await this.makeRPCRequest('eth_call', [transactionObject, 'latest'], nodeUrl)
   }
 
-  async getGasPrice(nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_gasPrice', [], nodeUrl)
+  async getChainId(nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_chainId', [], nodeUrl)
   }
 
-  async getLogs(filterObject: any, nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_getLogs', [filterObject], nodeUrl)
+  async getCoinbaseAddress(nodeUrl?: string){
+    return await this.makeRPCRequest('eth_coinbase', [], nodeUrl);
   }
 
-  async getNetVersion(nodeUrl?: string) {
-    return await this.makeRPCRequest('net_version', [], nodeUrl)
-  }
-
-  async sendRawTransaction(signedTxData: string, nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_sendRawTransaction', [signedTxData], nodeUrl)
+  async getAccessList(transactionObject: any, nodeUrl?: string ) {
+    return await this.makeRPCRequest('eth_createAccessList',[transactionObject,'latest'], nodeUrl)
   }
 
   async estimateGas(transactionObject: any, nodeUrl?: string) {
     return await this.makeRPCRequest('eth_estimateGas', [transactionObject], nodeUrl)
   }
 
-  async getMaxPriorityFeePerGas(nodeUrl?: string) {
-    return await this.makeRPCRequest('eth_maxPriorityFeePerGas', [], nodeUrl)
+  async getGasPrice(nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_gasPrice', [], nodeUrl)
+  }
+
+  async getBalance(address: string, nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_getBalance', [address, 'latest'], nodeUrl)
+  }
+
+  async getBlockByHash(blockHash: string, nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_getBlockByHash', [blockHash, true], nodeUrl)
+  }
+
+  async getBlockByNumber(blockNumber: string, nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_getBlockByNumber', [blockNumber, true], nodeUrl)
+  }
+
+  async getTransactionCountInBlock(blockNumber: string, blockHash: string, nodeUrl?: string){
+    if(blockNumber != null){
+      return await this.makeRPCRequest("eth_getBlockTransactionCountByNumber",[blockNumber], nodeUrl )
+    }
+    if(blockHash != null){
+      return await this.makeRPCRequest("eth_getBlockTransactionCountByHash",[blockHash],nodeUrl)
+    }
+    return await this.makeRPCRequest("eth_getBlockTransactionCountByNumber",["latest"], nodeUrl)
   }
 
   async getCode(address: string, nodeUrl?: string) {
     return await this.makeRPCRequest('eth_getCode', [address, 'latest'], nodeUrl)
   }
 
-  // Add more methods as needed...
+  async getFilterChanges(filterIdentifier: string, nodeUrl?: string) {
+    return await this.makeRPCRequest("eth_getFilterChanges",[filterIdentifier], nodeUrl)
+  }
+
+  async getFilterLogs(filteridentifier: string, nodeUrl?: string){
+    return await this.makeRPCRequest("eth_getFilterLogs", [filteridentifier], nodeUrl)
+  }  
+
+  async getLogs(filterObject: any, nodeUrl?: string) {
+    return await this.makeRPCRequest("eth_getLogs", [filterObject], nodeUrl)
+  }
+
+  // overlook
+  async getProof(address: string, storageKeys: string[], nodeUrl?: string){
+    return await this.makeRPCRequest("eth_getProof", [address,storageKeys,"latest"],nodeUrl)
+  }
+
+  async getStorageAt(address: string, storageSlot: string, nodeUrl?: string){
+    return await this.makeRPCRequest("eth_getStorageAt",[address,storageSlot,"latest"], nodeUrl)
+  }
+
+  async getTransactionByHash(transactionHash: string, nodeUrl?: string) {
+    return await this.makeRPCRequest("eth_getTransactionByHash", [transactionHash], nodeUrl)
+  }
+
+  async getTransactionReceipt(transactionHash: string, nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_getTransactionReceipt', [transactionHash], nodeUrl)
+  }
+
+  async getTransactionCount(address: string, nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_getTransactionCount', [address, 'latest'], nodeUrl)
+  }
+
+  async getMaxPriorityFeePerGas(nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_maxPriorityFeePerGas', [], nodeUrl)
+  }
+
+  async sendRawTransaction(signedTxData: string, nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_sendRawTransaction', [signedTxData], nodeUrl)
+  }
+
+  async getNetVersion(nodeUrl?: string) {
+    return await this.makeRPCRequest('net_version', [], nodeUrl)
+  }
+  
 }
 
 export default EthereumClient
