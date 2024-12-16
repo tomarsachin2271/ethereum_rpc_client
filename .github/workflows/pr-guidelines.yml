@@ -46,6 +46,9 @@ jobs:
 
       - name: Check PR Description
         run: |
+          # Assign PR body from GitHub context
+          PR_BODY="${{ github.event.pull_request.body }}"
+          
           # Escape backticks and single quotes in PR body
           PR_BODY=$(printf "%s" "$PR_BODY" | sed 's/`/\\`/g')
           
