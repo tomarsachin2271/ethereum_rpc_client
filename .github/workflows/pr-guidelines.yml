@@ -45,24 +45,23 @@ jobs:
           validateSingleCommitMatchesPrTitle: false
 
       - name: Check PR Description
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          # Assign PR body from GitHub context
-          PR_BODY="${{ github.event.pull_request.body }}"
+          # Use printf with %q to properly escape the PR body
+          ESCAPED_PR_BODY=$(printf '%q' "$PR_BODY")
           
-          # Escape backticks and single quotes in PR body
-          PR_BODY=$(printf "%s" "$PR_BODY" | sed 's/`/\\`/g')
-          
-          echo "PR_BODY: $PR_BODY"
+          echo "ESCAPED_PR_BODY: $ESCAPED_PR_BODY"
 
           # Check if description is empty
-          if [ -z "$PR_BODY" ]; then
+          if [ -z "$ESCAPED_PR_BODY" ]; then
             echo "PR description is required"
             exit 1
           fi
           
           
           # Changed to make issue reference required
-          if ! echo "$PR_BODY" | grep -qE "(Closes|Fixes|Resolves) #[0-9]+"; then
+          if ! echo "$ESCAPED_PR_BODY" | grep -qE "(Closes|Fixes|Resolves) #[0-9]+"; then
             echo "Error: PR must reference an issue using 'Closes #XX', 'Fixes #XX', or 'Resolves #XX'"
             exit 1
           fi
