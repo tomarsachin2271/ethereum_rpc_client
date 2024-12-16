@@ -58,8 +58,14 @@ jobs:
             exit 1
           fi
           
+          # Sanitize PR_BODY for pattern matching (strip the outer single quotes)
+          CLEAN_PR_BODY=$(printf "%s" "$PR_BODY" | sed "s/^'//" | sed "s/'$//")
+
+          # Debugging: Print CLEAN_PR_BODY for clarity
+          echo "Sanitized PR_BODY: $CLEAN_PR_BODY"
+          
           # Changed to make issue reference required
-          if ! echo "$PR_BODY" | grep -qE "(Closes|Fixes|Resolves) #[0-9]+"; then
+          if ! echo "$CLEAN_PR_BODY" | grep -qE "(Closes|Fixes|Resolves) #[0-9]+"; then
             echo "Error: PR must reference an issue using 'Closes #XX', 'Fixes #XX', or 'Resolves #XX'"
             exit 1
           fi
