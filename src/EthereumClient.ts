@@ -6,6 +6,24 @@ interface EthereumClientOptions {
   metricTracker?: IMetricTracker
 }
 
+/**
+ * EthereumClient is a wrapper around the Ethereum JSON-RPC API.
+ * It is used to make requests to Ethereum nodes.
+ * It supports multiple nodes, and will try each node until it gets a successful response.
+ * If all nodes fail, it will throw the last error.
+ * It also supports tracking metrics for each request.
+ * @param {string[]} defaultNodeUrls - The default node URLs to use for requests.
+ * @param {IMetricTracker} metricTracker - The metric tracker to use for tracking metrics.
+ * @constructor
+ * @throws {Error} - If all requests fail.
+ * @example
+ * const client = new EthereumClient({
+ *  defaultNodeUrls: ['https://mainnet.infura.io/v3/...'],
+ * metricTracker: new MetricTracker(),
+ * });
+ * const balance = await client.getBalance('0x...');
+ * const transactionCount = await client.getTransactionCount('0x...');
+ */
 class EthereumClient {
   private clients: Record<string, AxiosInstance> = {}
   private readonly defaultNodeUrls: string[]
@@ -18,6 +36,12 @@ class EthereumClient {
     this.metricTracker = options.metricTracker
   }
 
+  /**
+   * Returns a client for the given node URL.
+   * If a client for the given URL has not been created yet, it will create and cache one.
+   * @param {string} nodeUrl - The node URL to get a client for.
+   * @returns {AxiosInstance} - The client for the given node URL.
+   */ 
   private getClient(nodeUrl: string): AxiosInstance {
     // If a client for this URL has not been created yet, create and cache one.
     if (!this.clients[nodeUrl]) {
@@ -132,7 +156,19 @@ class EthereumClient {
     return await this.makeRPCRequest('eth_getCode', [address, 'latest'], nodeUrl)
   }
 
+  async getTransaction(transactionHash: string, nodeUrl?: string) {
+    return await this.makeRPCRequest('eth_getTransactionByHash', [transactionHash], nodeUrl)
+  }
+
+  async getTransactionReceipts(transactionHashes: string[], nodeUrl?: string) {
+    const promises = transactionHashes.map((hash) => this.getTransactionReceipt(hash, nodeUrl))
+    return await Promise.all(promises)
+  }
+
+
+
   // Add more methods as needed...
 }
+
 
 export default EthereumClient
