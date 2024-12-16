@@ -1,0 +1,75 @@
+name: PR Guidelines Check
+
+permissions:
+  pull-requests: write     # Needed to check/modify PR information
+  contents: read          # Needed to read repository contents
+  issues: read           # Needed to read issue references
+  statuses: write        # Needed for PR status checks
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check PR Title Format
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Keep the types configuration as a YAML array for better readability
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            test
+            chore
+            perf
+            ci
+            build
+            revert
+            wip
+            deps
+          requireScope: true
+          subjectPattern: ^[A-Za-z].+$
+          # Add these configurations explicitly
+          wip: true
+          validateSingleCommit: false
+          validateSingleCommitMatchesPrTitle: false
+
+      - name: Check PR Description
+        run: |
+          PR_BODY="${{ github.event.pull_request.body }}"
+          
+          # Check if description is empty
+          if [ -z "$PR_BODY" ]; then
+            echo "PR description is required"
+            exit 1
+          fi
+          
+          # Changed to make issue reference required
+          if ! echo "$PR_BODY" | grep -qE "(Closes|Fixes|Resolves) #[0-9]+"; then
+            echo "Error: PR must reference an issue using 'Closes #XX', 'Fixes #XX', or 'Resolves #XX'"
+            exit 1
+          fi
+
+      - name: Check Reviewers
+        if: github.event.action == 'opened'
+        run: |
+          REVIEWERS=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "${{ github.event.pull_request.url }}/requested_reviewers" \
+            | jq '.users | length')
+          
+          if [ "$REVIEWERS" -eq 0 ]; then
+            echo "At least one reviewer must be assigned to the PR"
+            exit 1
+          fi 
