@@ -48,6 +48,9 @@ jobs:
         run: |
           PR_BODY="${{ github.event.pull_request.body }}"
           
+          # Escape any backticks or other special characters
+          PR_BODY=$(printf "%s" "$PR_BODY" | sed 's/`/\\`/g')
+          
           # Check if description is empty
           if [ -z "$PR_BODY" ]; then
             echo "PR description is required"
